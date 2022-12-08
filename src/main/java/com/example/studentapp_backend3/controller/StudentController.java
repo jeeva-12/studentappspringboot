@@ -1,36 +1,51 @@
 package com.example.studentapp_backend3.controller;
 
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.example.studentapp_backend3.dao.StudentDao;
+import com.example.studentapp_backend3.model.Students;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
 
 @RestController
 public class StudentController {
+@Autowired
+private StudentDao dao;
 
 
-    @GetMapping("/")
-    public String Homepage()
+    @CrossOrigin(origins = "*")
+    @PostMapping(path = "/add",consumes = "application/json",produces ="application/json")
+    public String AddStudents(@RequestBody Students s)
+
     {
-        return  "Welcome to homepage";
-
+        System.out.println(s.getName().toString());
+        return "Student added successfully";
     }
 
-    @GetMapping("/contact")
-    public String ContactPage()
+    @CrossOrigin(origins = "*")
+    @PostMapping(path = "/search",consumes = "application/json",produces = "application/json")
+    public List<Students> SearchStu(@RequestBody Students s)
     {
-        return " welcome to contact page";
+        String rollno=String.valueOf(s.getRollno());
+        System.out.println(rollno);
+        return ((List<Students>) dao.Searchstu(s.getRollno()));
     }
 
-    @GetMapping("/gallery")
-    public String Gallery()
-    {
-     return "Welcome to my gallery";
+    @CrossOrigin(origins = "*")
+    @GetMapping("/view")
+    public List<Students> ViewAll(){
+        return (List<Students>) dao.findAll();
     }
 
-
-    @GetMapping("/home")
-    public String Home()
-    {
-        return "Welcome to my Home";
+    @CrossOrigin(origins = "*")
+    @PostMapping(path = "/deletestu",consumes = "application/json",produces = "application/json")
+    public HashMap<String,String> deleteStu(@RequestBody Students s){
+        String stuid=String.valueOf(s.getId());
+        System.out.println(stuid);
+        HashMap<String,String> map=new HashMap<>();
+        map.put("status","success");
+        return map;
     }
 }
